@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gather × Mars | AI Research Results Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,400;1,9..144,600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --mars-blue: #003DA5;
+  --mars-red: #C8102E;
+  --teal: #0ABAB5;
+  --deep: #0A1E33;
+  --gold: #F5A623;
+  --coral: #FF6B6B;
+  --violet: #7C5CFC;
+  --surface: #F4F5F7;
+  --card: #FFFFFF;
+  --text: #0F1A2A;
+  --text2: #556377;
+  --border: rgba(15,26,42,0.07);
+  --sh: 0 1px 3px rgba(0,0,0,0.04), 0 4px 24px rgba(0,0,0,0.06);
+  --sh-hover: 0 4px 32px rgba(0,0,0,0.1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--card);-webkit-font-smoothing:antialiased;}
+
+/* ═══ HERO ═══ */
+.hero{
+  min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;
+  background:var(--deep);
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 55% 55% at 75% 25%, rgba(200,16,46,0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 45% 50% at 25% 75%, rgba(10,186,181,0.14) 0%, transparent 65%),
+    radial-gradient(ellipse 30% 30% at 50% 50%, rgba(124,92,252,0.06) 0%, transparent 50%);
+}
+.hero-grid-bg{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size:48px 48px;
+  mask-image:radial-gradient(ellipse 60% 60% at 50% 50%, black 10%, transparent 80%);
+}
+.hero-inner{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:140px 48px 100px;width:100%;}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,0.07);backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,0.1);border-radius:100px;
+  padding:7px 18px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.8);
+  letter-spacing:1px;text-transform:uppercase;margin-bottom:28px;
+  animation:fadeUp .7s ease both;
+}
+.hero-badge .dot{width:6px;height:6px;background:var(--teal);border-radius:50%;animation:pulse 2s ease infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(1.5);}}
+.hero h1{
+  font-family:'Fraunces',serif;font-size:clamp(38px,5.2vw,68px);font-weight:700;
+  line-height:1.08;color:#fff;max-width:800px;margin-bottom:20px;
+  animation:fadeUp .7s ease .1s both;
+}
+.hero h1 em{font-style:italic;color:var(--teal);}
+.hero-sub{font-size:18px;line-height:1.65;color:rgba(255,255,255,0.6);max-width:540px;margin-bottom:44px;animation:fadeUp .7s ease .2s both;}
+.hero-stats{display:flex;gap:44px;animation:fadeUp .7s ease .3s both;}
+.hero-stat .num{font-family:'Fraunces',serif;font-size:34px;font-weight:700;color:#fff;}
+.hero-stat .lbl{font-size:12px;color:rgba(255,255,255,0.45);margin-top:3px;letter-spacing:.3px;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+
+/* ═══ SECTIONS ═══ */
+section{padding:88px 48px;}
+.container{max-width:1200px;margin:0 auto;}
+.s-label{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--teal);margin-bottom:10px;}
+.s-title{font-family:'Fraunces',serif;font-size:clamp(26px,3.2vw,40px);font-weight:700;line-height:1.15;margin-bottom:12px;}
+.s-desc{font-size:16px;line-height:1.65;color:var(--text2);max-width:600px;margin-bottom:48px;}
+
+/* ═══ STUDY SECTIONS ═══ */
+.study-section{border-bottom:1px solid var(--border);}
+.study-section:nth-child(odd){background:var(--surface);}
+.study-header{display:flex;align-items:flex-start;gap:16px;margin-bottom:36px;}
+.study-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.study-header h2{font-family:'Fraunces',serif;font-size:28px;font-weight:700;line-height:1.2;}
+.study-header .study-tag{font-size:12px;font-weight:600;color:var(--teal);letter-spacing:.5px;margin-top:4px;}
+.study-intro{font-size:15px;line-height:1.7;color:var(--text2);max-width:700px;margin-bottom:40px;}
+
+/* ═══ DATA CARDS & GRIDS ═══ */
+.data-grid{display:grid;gap:24px;}
+.data-grid.g2{grid-template-columns:1fr 1fr;}
+.data-grid.g3{grid-template-columns:1fr 1fr 1fr;}
+.data-grid.g4{grid-template-columns:1fr 1fr 1fr 1fr;}
+
+.card{
+  background:var(--card);border-radius:16px;padding:28px 24px;
+  border:1px solid var(--border);transition:transform .3s, box-shadow .3s;
+}
+.card:hover{transform:translateY(-3px);box-shadow:var(--sh-hover);}
+.card-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text2);opacity:.6;margin-bottom:12px;}
+.card h4{font-size:15px;font-weight:600;margin-bottom:4px;}
+
+/* chart containers */
+.chart-wrap{position:relative;width:100%;aspect-ratio:16/10;}
+.chart-wrap canvas{width:100%!important;height:100%!important;}
+.chart-wrap-sq{position:relative;width:100%;aspect-ratio:1/1;}
+.chart-wrap-sq canvas{width:100%!important;height:100%!important;}
+
+/* KPI row */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px;}
+.kpi{background:var(--card);border-radius:12px;padding:20px;border:1px solid var(--border);text-align:center;}
+.kpi .val{font-family:'Fraunces',serif;font-size:28px;font-weight:700;}
+.kpi .lbl{font-size:11px;color:var(--text2);margin-top:2px;letter-spacing:.3px;}
+
+/* Verbatim quotes */
+.verbatim-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px;}
+.verbatim{
+  background:var(--card);border-radius:12px;padding:20px 22px;
+  border-left:3px solid var(--teal);border-top:1px solid var(--border);
+  border-right:1px solid var(--border);border-bottom:1px solid var(--border);
+  font-size:14px;line-height:1.6;color:var(--text);font-style:italic;
+}
+.verbatim .v-meta{font-style:normal;font-size:11px;color:var(--text2);margin-top:8px;font-weight:600;}
+
+/* Perceptual map */
+.perceptual-map{
+  position:relative;width:100%;aspect-ratio:1.4/1;
+  background:var(--card);border-radius:16px;border:1px solid var(--border);
+  overflow:hidden;
+}
+.pm-axis-x,.pm-axis-y{position:absolute;background:var(--border);}
+.pm-axis-x{width:80%;height:1px;top:50%;left:10%;}
+.pm-axis-y{width:1px;height:80%;top:10%;left:50%;}
+.pm-label{position:absolute;font-size:10px;font-weight:600;color:var(--text2);letter-spacing:1px;text-transform:uppercase;}
+.pm-label.top{top:6%;left:50%;transform:translateX(-50%);}
+.pm-label.bottom{bottom:6%;left:50%;transform:translateX(-50%);}
+.pm-label.left{left:4%;top:50%;transform:translateY(-50%) rotate(-90deg);}
+.pm-label.right{right:4%;top:50%;transform:translateY(-50%) rotate(90deg);}
+.pm-dot{
+  position:absolute;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;color:#fff;cursor:default;
+  transition:transform .3s;
+}
+.pm-dot:hover{transform:scale(1.15);}
+.pm-dot-label{
+  position:absolute;top:calc(100% + 4px);left:50%;transform:translateX(-50%);
+  white-space:nowrap;font-size:10px;font-weight:600;color:var(--text);
+}
+
+/* Occasion heatmap */
+.heatmap-table{width:100%;border-collapse:separate;border-spacing:3px;margin-top:16px;}
+.heatmap-table th{font-size:10px;font-weight:600;color:var(--text2);letter-spacing:.5px;text-transform:uppercase;padding:8px 6px;text-align:center;}
+.heatmap-table th:first-child{text-align:left;}
+.heatmap-table td{text-align:center;padding:10px 6px;border-radius:8px;font-size:12px;font-weight:600;color:#fff;min-width:60px;}
+.heatmap-table td:first-child{text-align:left;color:var(--text);font-weight:500;background:transparent!important;font-size:13px;}
+
+/* Bar list */
+.bar-list{display:flex;flex-direction:column;gap:12px;margin-top:8px;}
+.bar-item{display:flex;align-items:center;gap:12px;}
+.bar-item .bar-label{font-size:13px;font-weight:500;width:140px;flex-shrink:0;text-align:right;}
+.bar-track{flex:1;height:24px;background:var(--surface);border-radius:6px;overflow:hidden;position:relative;}
+.bar-fill{height:100%;border-radius:6px;display:flex;align-items:center;padding-left:8px;font-size:11px;font-weight:700;color:#fff;transition:width 1s ease;}
+
+/* Segment tags */
+.seg-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;}
+.seg-tag{font-size:11px;font-weight:600;padding:5px 14px;border-radius:100px;background:rgba(10,186,181,0.08);color:var(--teal);border:1px solid rgba(10,186,181,0.15);}
+
+/* ═══ ADVANTAGE ═══ */
+.adv-section{background:var(--deep);color:#fff;position:relative;overflow:hidden;}
+.adv-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 50% at 80% 50%, rgba(10,186,181,0.06) 0%, transparent 70%);}
+.adv-section .s-title{color:#fff;}
+.adv-section .s-desc{color:rgba(255,255,255,0.55);}
+.adv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:48px;position:relative;}
+.adv-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:28px 24px;backdrop-filter:blur(8px);transition:background .3s,border-color .3s;}
+.adv-card:hover{background:rgba(255,255,255,0.07);border-color:rgba(10,186,181,0.25);}
+.adv-card .adv-n{font-family:'Fraunces',serif;font-size:28px;font-weight:700;color:var(--teal);margin-bottom:10px;}
+.adv-card h4{font-size:15px;font-weight:600;margin-bottom:6px;}
+.adv-card p{font-size:13px;line-height:1.6;color:rgba(255,255,255,0.5);}
+
+/* ═══ CTA ═══ */
+.cta{text-align:center;padding:88px 48px;background:var(--surface);}
+.cta .s-title{max-width:550px;margin:0 auto 12px;}
+.cta .s-desc{max-width:440px;margin:0 auto 36px;}
+.cta-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  background:linear-gradient(135deg,var(--mars-blue),var(--teal));
+  color:#fff;font-size:15px;font-weight:600;padding:14px 32px;
+  border-radius:100px;text-decoration:none;border:none;cursor:pointer;
+  font-family:inherit;transition:transform .3s,box-shadow .3s;
+}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,61,165,0.25);}
+.cta-btn svg{width:16px;height:16px;}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:900px){
+  section{padding:64px 20px;}
+  .hero-inner{padding:100px 20px 60px;}
+  .data-grid.g2,.data-grid.g3,.data-grid.g4{grid-template-columns:1fr;}
+  .kpi-row{grid-template-columns:1fr 1fr;}
+  .verbatim-grid{grid-template-columns:1fr;}
+  .adv-grid{grid-template-columns:1fr;}
+  .hero-stats{flex-wrap:wrap;gap:28px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-inner">
+    <div class="hero-badge"><span class="dot"></span> Mars Innovation Team · Research Preview</div>
+    <h1>What <em>real results</em> look like from Gather</h1>
+    <p class="hero-sub">These are synthetic results generated to preview the kind of insight, depth, and deliverables Gather produces — all within 7 days of project kick-off.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">5 studies</div><div class="lbl">Scoped for Mars</div></div>
+      <div class="hero-stat"><div class="num">n=3,000–5,000</div><div class="lbl">Per study</div></div>
+      <div class="hero-stat"><div class="num">7 days</div><div class="lbl">Kick-off to delivery</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     STUDY 1: CONCEPT TESTING
+     ═══════════════════════════════════════════════════ -->
+<section class="study-section" style="background:var(--surface);">
+  <div class="container">
+    <div class="study-header">
+      <div class="study-icon" style="background:rgba(0,61,165,0.08);">🧪</div>
+      <div>
+        <h2>Concept Testing Engine</h2>
+        <div class="study-tag">New Product & Packaging Validation · n=3,124 · 4 Concepts Tested</div>
+      </div>
+    </div>
+    <p class="study-intro">Four snack concepts were evaluated via conversational concept test. Respondents saw each concept and engaged in an adaptive dialogue that probed initial reactions, purchase barriers, flavor expectations, and competitive framing.</p>
+
+    <!-- KPIs -->
+    <div class="kpi-row">
+      <div class="kpi"><div class="val" style="color:var(--mars-blue);">78%</div><div class="lbl">Top Concept Appeal</div></div>
+      <div class="kpi"><div class="val" style="color:var(--teal);">4.2/5</div><div class="lbl">Avg. Purchase Intent</div></div>
+      <div class="kpi"><div class="val" style="color:var(--gold);">62%</div><div class="lbl">Would Replace Current</div></div>
+      <div class="kpi"><div class="val" style="color:var(--coral);">28,470</div><div class="lbl">Verbatim Responses</div></div>
+    </div>
+
+    <div class="data-grid g2">
+      <!-- Concept Scorecard Chart -->
+      <div class="card">
+        <div class="card-label">Concept Scorecard</div>
+        <div class="chart-wrap"><canvas id="conceptChart"></canvas></div>
+      </div>
+      <!-- Purchase Intent by Concept -->
+      <div class="card">
+        <div class="card-label">Purchase Intent Distribution</div>
+        <div class="chart-wrap"><canvas id="intentChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Barrier Analysis -->
+    <div class="card" style="margin-top:24px;">
+      <div class="card-label">Top Purchase Barriers (% of Respondents Citing)</div>
+      <div class="bar-list">
+        <div class="bar-item"><span class="bar-label">Price concern</span><div class="bar-track"><div class="bar-fill" style="width:47%;background:var(--mars-red);">47%</div></div></div>
+        <div class="bar-item"><span class="bar-label">Flavor skepticism</span><div class="bar-track"><div class="bar-fill" style="width:34%;background:var(--coral);">34%</div></div></div>
+        <div class="bar-item"><span class="bar-label">Ingredient concerns</span><div class="bar-track"><div class="bar-fill" style="width:28%;background:var(--gold);">28%</div></div></div>
+        <div class="bar-item"><span class="bar-label">Portion size</span><div class="bar-track"><div class="bar-fill" style="width:21%;background:var(--teal);">21%</div></div></div>
+        <div class="bar-item"><span class="bar-label">Brand unfamiliarity</span><div class="bar-track"><div class="bar-fill" style="width:15%;background:var(--violet);">15%</div></div></div>
+      </div>
+    </div>
+
+    <!-- Verbatims -->
+    <div class="verbatim-grid">
+      <div class="verbatim">"I love the idea of a protein-packed chocolate bar but I'd need to taste it first — the 'healthy chocolate' space has burned me before."<div class="v-meta">— Female, 29, Concept A</div></div>
+      <div class="verbatim">"This is exactly what I grab at 3pm. If it's under $2.50 and doesn't taste chalky, I'm buying a box."<div class="v-meta">— Male, 34, Concept A</div></div>
+      <div class="verbatim">"The packaging feels premium but the name sounds like a kids' product. There's a disconnect."<div class="v-meta">— Female, 41, Concept C</div></div>
+      <div class="verbatim">"I already buy Kind bars for this exact occasion. You'd need to give me a reason to switch — taste or price."<div class="v-meta">— Male, 27, Concept B</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     STUDY 2: BRAND SENTIMENT
+     ═══════════════════════════════════════════════════ -->
+<section class="study-section">
+  <div class="container">
+    <div class="study-header">
+      <div class="study-icon" style="background:rgba(200,16,46,0.08);">💬</div>
+      <div>
+        <h2>Brand Sentiment Tracker</h2>
+        <div class="study-tag">Cross-Portfolio Perception & Equity · n=5,072 · 8 Brands Tracked</div>
+      </div>
+    </div>
+    <p class="study-intro">Consumers described their relationship with Mars brands and competitors through projective exercises, spontaneous word association, and competitive trade-off scenarios. Sentiment was scored and themed at the response level.</p>
+
+    <div class="kpi-row">
+      <div class="kpi"><div class="val" style="color:var(--teal);">+42</div><div class="lbl">M&M's Net Sentiment</div></div>
+      <div class="kpi"><div class="val" style="color:var(--mars-blue);">+38</div><div class="lbl">Snickers Net Sentiment</div></div>
+      <div class="kpi"><div class="val" style="color:var(--gold);">+29</div><div class="lbl">Pedigree Net Sentiment</div></div>
+      <div class="kpi"><div class="val" style="color:var(--coral);">3.1×</div><div class="lbl">Richer vs. Survey Data</div></div>
+    </div>
+
+    <div class="data-grid g2">
+      <!-- Perceptual Map -->
+      <div class="card">
+        <div class="card-label">Perceptual Map — Confectionery Portfolio</div>
+        <div class="perceptual-map" id="percMap">
+          <div class="pm-axis-x"></div>
+          <div class="pm-axis-y"></div>
+          <div class="pm-label top">Premium</div>
+          <div class="pm-label bottom">Everyday</div>
+          <div class="pm-label left">Traditional</div>
+          <div class="pm-label right">Innovative</div>
+          <!-- dots positioned via JS -->
+        </div>
+      </div>
+      <!-- Emotional Territory -->
+      <div class="card">
+        <div class="card-label">Emotional Territory Ownership</div>
+        <div class="chart-wrap"><canvas id="emotionChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Sentiment Over Time -->
+    <div class="card" style="margin-top:24px;">
+      <div class="card-label">Sentiment Trend — Quarterly Narrative Shift (Indexed)</div>
+      <div class="chart-wrap"><canvas id="sentimentTrend"></canvas></div>
+    </div>
+
+    <div class="verbatim-grid">
+      <div class="verbatim">"Snickers is the one I reach for when I need to actually feel full. It's not a treat, it's a solution."<div class="v-meta">— Male, 32, Spontaneous Association</div></div>
+      <div class="verbatim">"M&M's feel like they belong at every party. They're the brand that never tries too hard and that's why everyone loves them."<div class="v-meta">— Female, 26, Brand Personification</div></div>
+      <div class="verbatim">"If Dove chocolate were a person, it'd be the friend who always brings wine. Sophisticated but approachable."<div class="v-meta">— Female, 38, Projective Exercise</div></div>
+      <div class="verbatim">"I trust Reese's more on flavor innovation than M&M's. M&M's new flavors feel gimmicky. Reese's new shapes feel purposeful."<div class="v-meta">— Male, 24, Competitive Trade-off</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     STUDY 3: OCCASION & USAGE MAPPING
+     ═══════════════════════════════════════════════════ -->
+<section class="study-section" style="background:var(--surface);">
+  <div class="container">
+    <div class="study-header">
+      <div class="study-icon" style="background:rgba(245,166,35,0.08);">🗺️</div>
+      <div>
+        <h2>Occasion & Usage Mapping</h2>
+        <div class="study-tag">Demand Space Discovery · n=4,186 · 12,470 Occasions Captured</div>
+      </div>
+    </div>
+    <p class="study-intro">Respondents walked through recent real consumption moments in dialogue form. Our AI moderator probed on context, mood, alternatives considered, and satisfaction — surfacing 14 distinct demand spaces, including 3 emergent occasions not present in existing frameworks.</p>
+
+    <div class="kpi-row">
+      <div class="kpi"><div class="val" style="color:var(--gold);">14</div><div class="lbl">Demand Spaces Identified</div></div>
+      <div class="kpi"><div class="val" style="color:var(--teal);">3 new</div><div class="lbl">Emergent Occasions</div></div>
+      <div class="kpi"><div class="val" style="color:var(--mars-blue);">$340M</div><div class="lbl">Est. Whitespace Value</div></div>
+      <div class="kpi"><div class="val" style="color:var(--coral);">12,470</div><div class="lbl">Moments Captured</div></div>
+    </div>
+
+    <!-- Heatmap -->
+    <div class="card">
+      <div class="card-label">Consumption Occasion Heatmap — Frequency × Time of Day</div>
+      <table class="heatmap-table" id="heatmap"></table>
+    </div>
+
+    <!-- Demand Space Chart -->
+    <div class="data-grid g2" style="margin-top:24px;">
+      <div class="card">
+        <div class="card-label">Top Demand Spaces by Frequency</div>
+        <div class="chart-wrap"><canvas id="demandChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-label">Whitespace Opportunities</div>
+        <div style="margin-top:8px;">
+          <div style="background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:12px;padding:16px 18px;margin-bottom:12px;">
+            <h4 style="font-size:14px;font-weight:700;color:var(--gold);margin-bottom:4px;">🔥 "Guilt-Free Wind-Down"</h4>
+            <p style="font-size:13px;line-height:1.55;color:var(--text2);">9–11pm solo snacking framed as self-care. Consumers want indulgent taste with functional permission (protein, low sugar). Currently served by halo-health brands, not confectionery leaders. <strong>Est. $140M opportunity.</strong></p>
+          </div>
+          <div style="background:rgba(10,186,181,0.06);border:1px solid rgba(10,186,181,0.15);border-radius:12px;padding:16px 18px;margin-bottom:12px;">
+            <h4 style="font-size:14px;font-weight:700;color:var(--teal);margin-bottom:4px;">⚡ "Desk Fuel"</h4>
+            <p style="font-size:13px;line-height:1.55;color:var(--text2);">2–4pm work-from-home energy crash. Need state is functional energy + mood boost. Snickers is already associated but undersized format and protein messaging are missing. <strong>Est. $95M incremental.</strong></p>
+          </div>
+          <div style="background:rgba(124,92,252,0.06);border:1px solid rgba(124,92,252,0.15);border-radius:12px;padding:16px 18px;">
+            <h4 style="font-size:14px;font-weight:700;color:var(--violet);margin-bottom:4px;">🎮 "Social Snack Table"</h4>
+            <p style="font-size:13px;line-height:1.55;color:var(--text2);">Shared snacking during gaming, streaming, or hangouts. Consumers want shareable formats + variety. M&M's has strong permission here but no dedicated format. <strong>Est. $105M opportunity.</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="verbatim-grid">
+      <div class="verbatim">"Around 10pm I want something sweet but I also want to feel like I'm not sabotaging my morning. It's weird — I want candy that doesn't feel like candy."<div class="v-meta">— Female, 31, Evening Occasion</div></div>
+      <div class="verbatim">"When the squad comes over for game night, we need something everyone can grab from. A bag of M&M's disappears in 10 minutes. Give me a party-sized format with mixed flavors."<div class="v-meta">— Male, 23, Social Occasion</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     STUDY 4: GEN Z
+     ═══════════════════════════════════════════════════ -->
+<section class="study-section">
+  <div class="container">
+    <div class="study-header">
+      <div class="study-icon" style="background:rgba(10,186,181,0.08);">⚡</div>
+      <div>
+        <h2>Gen Z & Emerging Consumer Acquisition</h2>
+        <div class="study-tag">Next-Gen Preference Architecture · n=3,240 · Ages 18–27</div>
+      </div>
+    </div>
+    <p class="study-intro">Mobile-first conversational interviews designed to mirror texting culture. 3× higher completion rate than traditional surveys in this demographic. Respondents engaged with projective exercises, competitive brand sorts, and scenario-based choice simulations.</p>
+
+    <div class="kpi-row">
+      <div class="kpi"><div class="val" style="color:var(--teal);">89%</div><div class="lbl">Completion Rate</div></div>
+      <div class="kpi"><div class="val" style="color:var(--violet);">18.4 min</div><div class="lbl">Avg. Engagement</div></div>
+      <div class="kpi"><div class="val" style="color:var(--gold);">67%</div><div class="lbl">Discover via Social</div></div>
+      <div class="kpi"><div class="val" style="color:var(--mars-red);">41%</div><div class="lbl">Values-Driven Purchase</div></div>
+    </div>
+
+    <div class="data-grid g2">
+      <div class="card">
+        <div class="card-label">Brand Discovery Channels — Gen Z</div>
+        <div class="chart-wrap"><canvas id="discoveryChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-label">Cultural Code Resonance</div>
+        <div class="chart-wrap"><canvas id="cultureChart"></canvas></div>
+      </div>
+    </div>
+
+    <div class="data-grid g2" style="margin-top:24px;">
+      <div class="card">
+        <div class="card-label">Gen Z Brand Affinity Index (Mars Portfolio)</div>
+        <div class="bar-list" style="margin-top:0;">
+          <div class="bar-item"><span class="bar-label">M&M's</span><div class="bar-track"><div class="bar-fill" style="width:82%;background:var(--teal);">82</div></div></div>
+          <div class="bar-item"><span class="bar-label">Skittles</span><div class="bar-track"><div class="bar-fill" style="width:76%;background:var(--teal);">76</div></div></div>
+          <div class="bar-item"><span class="bar-label">Snickers</span><div class="bar-track"><div class="bar-fill" style="width:71%;background:var(--mars-blue);">71</div></div></div>
+          <div class="bar-item"><span class="bar-label">Twix</span><div class="bar-track"><div class="bar-fill" style="width:63%;background:var(--mars-blue);">63</div></div></div>
+          <div class="bar-item"><span class="bar-label">Dove</span><div class="bar-track"><div class="bar-fill" style="width:48%;background:var(--text2);">48</div></div></div>
+          <div class="bar-item"><span class="bar-label">Milky Way</span><div class="bar-track"><div class="bar-fill" style="width:39%;background:var(--text2);">39</div></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-label">What Gen Z Says About Mars Brands</div>
+        <div class="seg-row" style="margin-top:0;margin-bottom:16px;">
+          <span class="seg-tag">Nostalgia</span>
+          <span class="seg-tag">Shareable</span>
+          <span class="seg-tag">Iconic</span>
+          <span class="seg-tag" style="background:rgba(200,16,46,0.08);color:var(--mars-red);border-color:rgba(200,16,46,0.15);">Not Health-Forward</span>
+          <span class="seg-tag" style="background:rgba(200,16,46,0.08);color:var(--mars-red);border-color:rgba(200,16,46,0.15);">Parent's Brand</span>
+        </div>
+        <div class="verbatim" style="margin-bottom:10px;">"M&M's are like the comfort hoodie of candy. I'll always love them but they don't feel like MY generation's brand."<div class="v-meta">— Female, 22</div></div>
+        <div class="verbatim">"Skittles actually gets the internet. Their marketing is weird in a good way. Snickers is funny but it's dad humor."<div class="v-meta">— Male, 20</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     STUDY 5: PET CARE
+     ═══════════════════════════════════════════════════ -->
+<section class="study-section" style="background:var(--surface);">
+  <div class="container">
+    <div class="study-header">
+      <div class="study-icon" style="background:rgba(124,92,252,0.08);">🐾</div>
+      <div>
+        <h2>Pet Care Segment Deep Dives</h2>
+        <div class="study-tag">Pet Parent Psychographics · n=4,360 · 4 Archetypes Identified</div>
+      </div>
+    </div>
+    <p class="study-intro">Pet parents engaged in 20+ minute conversations about their feeding decisions, brand relationships, and unmet needs. Response lengths were 2× longer than our CPG benchmark — pet parents love talking about their animals. Four distinct archetypes emerged.</p>
+
+    <div class="kpi-row">
+      <div class="kpi"><div class="val" style="color:var(--violet);">4</div><div class="lbl">Pet Parent Archetypes</div></div>
+      <div class="kpi"><div class="val" style="color:var(--teal);">22 min</div><div class="lbl">Avg. Conversation</div></div>
+      <div class="kpi"><div class="val" style="color:var(--gold);">73%</div><div class="lbl">Open to Switching</div></div>
+      <div class="kpi"><div class="val" style="color:var(--mars-red);">#2</div><div class="lbl">Pedigree Trust Rank</div></div>
+    </div>
+
+    <div class="data-grid g2">
+      <div class="card">
+        <div class="card-label">Brand Trust Hierarchy — Dog Food</div>
+        <div class="chart-wrap"><canvas id="trustChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-label">Pet Parent Archetypes</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div style="background:rgba(124,92,252,0.06);border-radius:10px;padding:14px 16px;">
+            <div style="font-size:13px;font-weight:700;color:var(--violet);margin-bottom:4px;">🏋️ Performance Optimizers (28%)</div>
+            <p style="font-size:12px;line-height:1.5;color:var(--text2);">Research-driven. Read ingredients obsessively. Willing to pay 2× for proven nutrition. Over-index on fresh/raw brands.</p>
+          </div>
+          <div style="background:rgba(10,186,181,0.06);border-radius:10px;padding:14px 16px;">
+            <div style="font-size:13px;font-weight:700;color:var(--teal);margin-bottom:4px;">🛋️ Comfort Nurturers (33%)</div>
+            <p style="font-size:12px;line-height:1.5;color:var(--text2);">Treats = love language. Prioritize taste and their pet's excitement. Strong loyalty once they find "the one." Mars's core audience.</p>
+          </div>
+          <div style="background:rgba(245,166,35,0.06);border-radius:10px;padding:14px 16px;">
+            <div style="font-size:13px;font-weight:700;color:var(--gold);margin-bottom:4px;">💰 Budget Pragmatists (22%)</div>
+            <p style="font-size:12px;line-height:1.5;color:var(--text2);">Value-driven but not careless. Want "good enough" nutrition at accessible prices. Pedigree's sweet spot but losing share to Costco private label.</p>
+          </div>
+          <div style="background:rgba(200,16,46,0.06);border-radius:10px;padding:14px 16px;">
+            <div style="font-size:13px;font-weight:700;color:var(--mars-red);margin-bottom:4px;">😰 Health-Anxious (17%)</div>
+            <p style="font-size:12px;line-height:1.5;color:var(--text2);">Triggered by pet health scares or vet recommendations. Will switch brands overnight. Over-trust DTC brands with "clinical" messaging.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Need State Gaps -->
+    <div class="card" style="margin-top:24px;">
+      <div class="card-label">Need-State Gap Analysis — Unmet Needs by Importance</div>
+      <div class="chart-wrap"><canvas id="needsChart"></canvas></div>
+    </div>
+
+    <div class="verbatim-grid">
+      <div class="verbatim">"I spend more time reading my dog's food label than my own food. If I can't pronounce it, it's not going in his bowl."<div class="v-meta">— Female, 34, Performance Optimizer</div></div>
+      <div class="verbatim">"The way he runs to his bowl when he hears the Pedigree bag crinkle — that's how I know I'm doing something right."<div class="v-meta">— Male, 45, Comfort Nurturer</div></div>
+      <div class="verbatim">"My vet said grain-free might cause heart problems and I panicked. Switched to Hill's overnight. I don't even know if that was the right call."<div class="v-meta">— Female, 29, Health-Anxious</div></div>
+      <div class="verbatim">"I'd love a subscription for my dog's food that adjusts as he ages. Nobody's doing that well yet."<div class="v-meta">— Male, 31, Performance Optimizer</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ADVANTAGE ═══ -->
+<section class="adv-section">
+  <div class="container">
+    <div class="s-label" style="color:var(--teal);">The Gather Advantage</div>
+    <div class="s-title">Why this is different</div>
+    <p class="s-desc">Traditional research forces a trade-off: qualitative depth or quantitative scale. Gather eliminates that trade-off.</p>
+    <div class="adv-grid">
+      <div class="adv-card"><div class="adv-n">7 days</div><h4>Speed to Insight</h4><p>From kick-off to production-ready report. No 6-week timelines.</p></div>
+      <div class="adv-card"><div class="adv-n">10×</div><h4>Signal Density</h4><p>15–20 min adaptive dialogue per respondent. Qual depth at quant scale.</p></div>
+      <div class="adv-card"><div class="adv-n">n=3,000+</div><h4>Stat Confidence</h4><p>Segment-level findings with quantified theme frequencies.</p></div>
+      <div class="adv-card"><div class="adv-n">AI</div><h4>Adaptive Moderation</h4><p>Every follow-up is tailored. No two conversations are the same.</p></div>
+      <div class="adv-card"><div class="adv-n">📱</div><h4>Mobile-Native</h4><p>2–3× completion rates. Respondents engage on their own time.</p></div>
+      <div class="adv-card"><div class="adv-n">📊</div><h4>Ready to Present</h4><p>Interactive dashboards. No reformatting. Walk straight into the boardroom.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA ═══ -->
+<section class="cta">
+  <div class="container">
+    <div class="s-label">Next Steps</div>
+    <div class="s-title">Let's scope a pilot study for Mars</div>
+    <p class="s-desc">We recommend starting with one study to prove the model — then expanding across the portfolio.</p>
+    <a href="mailto:jay@gatherhq.com" class="cta-btn">Let's Talk <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+</section>
+
+<script>
+// ═══ CHART.JS DEFAULTS ═══
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+Chart.defaults.font.size = 12;
+Chart.defaults.color = '#556377';
+Chart.defaults.plugins.legend.labels.usePointStyle = true;
+Chart.defaults.plugins.legend.labels.pointStyleWidth = 8;
+Chart.defaults.plugins.legend.labels.padding = 16;
+Chart.defaults.elements.bar.borderRadius = 4;
+
+const COLORS = {
+  blue:'#003DA5', red:'#C8102E', teal:'#0ABAB5', gold:'#F5A623',
+  coral:'#FF6B6B', violet:'#7C5CFC', deep:'#0A1E33', text2:'#556377'
+};
+
+// ═══ STUDY 1: CONCEPT TESTING ═══
+new Chart(document.getElementById('conceptChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Concept A\n"Protein Crunch"', 'Concept B\n"Fruit Fusion"', 'Concept C\n"Mini Bites"', 'Concept D\n"Dark Indulge"'],
+    datasets: [
+      {label:'Appeal', data:[78,61,54,69], backgroundColor:COLORS.blue},
+      {label:'Uniqueness', data:[72,58,41,65], backgroundColor:COLORS.teal},
+      {label:'Relevance', data:[74,67,62,53], backgroundColor:COLORS.gold},
+      {label:'Purchase Intent', data:[71,52,48,61], backgroundColor:COLORS.coral},
+    ]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    scales:{y:{beginAtZero:true,max:100,ticks:{callback:v=>v+'%'}},x:{ticks:{font:{size:11}}}},
+    plugins:{legend:{position:'bottom'}}
+  }
+});
+
+new Chart(document.getElementById('intentChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Definitely buy','Probably buy','Might buy','Probably not','Definitely not'],
+    datasets: [
+      {label:'Concept A', data:[28,43,18,8,3], backgroundColor:COLORS.blue},
+      {label:'Concept B', data:[14,38,27,15,6], backgroundColor:COLORS.teal},
+      {label:'Concept D', data:[21,40,22,12,5], backgroundColor:COLORS.gold},
+    ]
+  },
+  options: {
+    indexAxis:'y', responsive:true, maintainAspectRatio:false,
+    scales:{x:{stacked:false,ticks:{callback:v=>v+'%'}},y:{}},
+    plugins:{legend:{position:'bottom'}}
+  }
+});
+
+// ═══ STUDY 2: BRAND SENTIMENT ═══
+// Perceptual Map dots
+const brands = [
+  {name:"M&M's", x:48, y:38, size:44, color:COLORS.blue},
+  {name:"Snickers", x:38, y:55, size:40, color:COLORS.blue},
+  {name:"Twix", x:42, y:48, size:32, color:COLORS.teal},
+  {name:"Dove", x:60, y:25, size:30, color:COLORS.blue},
+  {name:"Reese's", x:62, y:42, size:38, color:COLORS.gold},
+  {name:"Kit Kat", x:55, y:52, size:34, color:COLORS.coral},
+  {name:"Hershey's", x:35, y:62, size:36, color:COLORS.text2},
+  {name:"Lindt", x:72, y:18, size:26, color:COLORS.violet},
+];
+const map = document.getElementById('percMap');
+brands.forEach(b => {
+  const dot = document.createElement('div');
+  dot.className = 'pm-dot';
+  dot.style.cssText = `width:${b.size}px;height:${b.size}px;background:${b.color};left:calc(${b.x}% - ${b.size/2}px);top:calc(${b.y}% - ${b.size/2}px);`;
+  dot.innerHTML = `<span class="pm-dot-label">${b.name}</span>`;
+  map.appendChild(dot);
+});
+
+new Chart(document.getElementById('emotionChart'), {
+  type: 'radar',
+  data: {
+    labels: ['Joy', 'Nostalgia', 'Comfort', 'Excitement', 'Trust', 'Indulgence'],
+    datasets: [
+      {label:"M&M's", data:[88,82,72,65,74,70], borderColor:COLORS.blue, backgroundColor:'rgba(0,61,165,0.08)', pointBackgroundColor:COLORS.blue},
+      {label:"Snickers", data:[62,68,84,58,78,82], borderColor:COLORS.teal, backgroundColor:'rgba(10,186,181,0.08)', pointBackgroundColor:COLORS.teal},
+      {label:"Reese's", data:[74,55,60,78,65,76], borderColor:COLORS.gold, backgroundColor:'rgba(245,166,35,0.08)', pointBackgroundColor:COLORS.gold},
+    ]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    scales:{r:{beginAtZero:true,max:100,ticks:{display:false},grid:{color:'rgba(0,0,0,0.05)'},pointLabels:{font:{size:11,weight:'600'}}}},
+    plugins:{legend:{position:'bottom'}}
+  }
+});
+
+new Chart(document.getElementById('sentimentTrend'), {
+  type: 'line',
+  data: {
+    labels: ['Q1 2025','Q2 2025','Q3 2025','Q4 2025','Q1 2026'],
+    datasets: [
+      {label:"M&M's", data:[100,103,101,106,108], borderColor:COLORS.blue, backgroundColor:COLORS.blue, tension:0.3, pointRadius:4},
+      {label:"Snickers", data:[100,98,102,104,105], borderColor:COLORS.teal, backgroundColor:COLORS.teal, tension:0.3, pointRadius:4},
+      {label:"Reese's", data:[100,105,108,112,115], borderColor:COLORS.gold, backgroundColor:COLORS.gold, tension:0.3, pointRadius:4},
+      {label:"Dove", data:[100,99,97,95,93], borderColor:COLORS.coral, backgroundColor:COLORS.coral, tension:0.3, pointRadius:4},
+    ]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    scales:{y:{min:88,max:120,ticks:{callback:v=>v}},x:{}},
+    plugins:{legend:{position:'bottom'}}
+  }
+});
+
+// ═══ STUDY 3: OCCASION HEATMAP ═══
+const heatData = {
+  rows: ['Afternoon pick-me-up','Evening wind-down','Post-workout','Social/sharing','Morning treat','On-the-go','Movie/streaming','Late-night craving'],
+  cols: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+  vals: [
+    [72,78,81,76,70,42,38],
+    [35,38,40,42,58,74,80],
+    [44,48,42,50,38,62,55],
+    [18,15,22,28,65,82,78],
+    [22,20,18,24,30,45,48],
+    [55,50,52,48,58,35,30],
+    [12,15,14,18,52,72,68],
+    [28,30,32,35,48,55,60],
+  ]
+};
+const ht = document.getElementById('heatmap');
+let thead = '<tr><th></th>';
+heatData.cols.forEach(c => thead += `<th>${c}</th>`);
+thead += '</tr>';
+let tbody = '';
+heatData.rows.forEach((r,i) => {
+  tbody += `<tr><td>${r}</td>`;
+  heatData.vals[i].forEach(v => {
+    const alpha = Math.max(0.15, v/100);
+    const bg = v > 65 ? `rgba(200,16,46,${alpha})` : v > 40 ? `rgba(245,166,35,${alpha})` : `rgba(10,186,181,${alpha})`;
+    tbody += `<td style="background:${bg};">${v}</td>`;
+  });
+  tbody += '</tr>';
+});
+ht.innerHTML = thead + tbody;
+
+new Chart(document.getElementById('demandChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Afternoon\nPick-me-up','Evening\nWind-down','Social\nSharing','Movie\nNight','Post-\nWorkout','Late-night\nCraving','Morning\nTreat','On-the-go'],
+    datasets: [{
+      data: [81,74,72,68,55,52,45,42],
+      backgroundColor: [COLORS.blue, COLORS.red, COLORS.teal, COLORS.violet, COLORS.gold, COLORS.coral, '#8B9DAF', '#8B9DAF'],
+    }]
+  },
+  options: {
+    indexAxis:'y', responsive:true, maintainAspectRatio:false,
+    scales:{x:{beginAtZero:true,ticks:{callback:v=>v+'%'}},y:{ticks:{font:{size:11}}}},
+    plugins:{legend:{display:false}}
+  }
+});
+
+// ═══ STUDY 4: GEN Z ═══
+new Chart(document.getElementById('discoveryChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['TikTok','Instagram','Friend/Peer','In-Store','YouTube','Twitter/X','Other'],
+    datasets: [{
+      data: [34,19,17,14,9,4,3],
+      backgroundColor: [COLORS.deep, COLORS.coral, COLORS.teal, COLORS.gold, COLORS.red, COLORS.violet, '#ccc'],
+      borderWidth: 2, borderColor: '#fff',
+    }]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    cutout:'55%',
+    plugins:{legend:{position:'bottom',labels:{font:{size:11}}}}
+  }
+});
+
+new Chart(document.getElementById('cultureChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Nostalgia','Sustainability','Authenticity','Indulgence','Wellness','Social Status','Rebellion'],
+    datasets: [
+      {label:'Resonance Score', data:[82,74,71,68,64,42,38], backgroundColor:COLORS.teal},
+      {label:'Mars Brand Fit', data:[78,35,52,72,28,44,30], backgroundColor:COLORS.blue},
+    ]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    scales:{y:{beginAtZero:true,max:100},x:{ticks:{font:{size:10}}}},
+    plugins:{legend:{position:'bottom'}}
+  }
+});
+
+// ═══ STUDY 5: PET CARE ═══
+new Chart(document.getElementById('trustChart'), {
+  type: 'bar',
+  data: {
+    labels: ["Hill's Science Diet","Pedigree","Purina Pro Plan","Blue Buffalo","Royal Canin","Farmer's Dog","Iams","Costco Kirkland"],
+    datasets: [{
+      label:'Trust Index',
+      data: [84,78,76,72,71,68,61,55],
+      backgroundColor: [COLORS.text2, COLORS.blue, COLORS.text2, COLORS.text2, COLORS.text2, COLORS.text2, COLORS.text2, COLORS.text2],
+    }]
+  },
+  options: {
+    indexAxis:'y', responsive:true, maintainAspectRatio:false,
+    scales:{x:{beginAtZero:true,max:100},y:{ticks:{font:{size:11}}}},
+    plugins:{legend:{display:false}}
+  }
+});
+
+new Chart(document.getElementById('needsChart'), {
+  type: 'scatter',
+  data: {
+    datasets: [
+      {label:'Personalized nutrition plan', data:[{x:88,y:22}], backgroundColor:COLORS.red, pointRadius:14},
+      {label:'Age-adaptive formulas', data:[{x:82,y:35}], backgroundColor:COLORS.gold, pointRadius:12},
+      {label:'Transparent sourcing', data:[{x:78,y:41}], backgroundColor:COLORS.teal, pointRadius:11},
+      {label:'Subscription flexibility', data:[{x:74,y:28}], backgroundColor:COLORS.violet, pointRadius:11},
+      {label:'Vet-endorsed treats', data:[{x:71,y:48}], backgroundColor:COLORS.blue, pointRadius:10},
+      {label:'Fresh/raw options', data:[{x:68,y:38}], backgroundColor:COLORS.coral, pointRadius:10},
+      {label:'Eco-friendly packaging', data:[{x:62,y:30}], backgroundColor:'#8B9DAF', pointRadius:9},
+    ]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    scales:{
+      x:{title:{display:true,text:'Importance to Pet Parents →',font:{weight:'600'}},min:50,max:100},
+      y:{title:{display:true,text:'Current Satisfaction →',font:{weight:'600'}},min:10,max:60}
+    },
+    plugins:{
+      legend:{position:'bottom',labels:{font:{size:10},padding:10}},
+      tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: Importance ${ctx.parsed.x}, Satisfaction ${ctx.parsed.y}`}}
+    }
+  }
+});
+</script>
+</body>
+</html>
